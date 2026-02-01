@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="?android:colorBackground">
+
+    <!-- TÍTULO -->
+    <TextView
+        android:id="@+id/textTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp" />
+
+    <!-- EMAIL -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp"
+            android:padding="12dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- SENHA -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconMode="password_toggle"
+        android:layout_marginBottom="24dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editSenha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Senha"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:padding="12dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- BOTÃO LOGIN -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEntrar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entrar"
+        android:textSize="16sp"
+        android:minHeight="48dp"
+        app:cornerRadius="12dp" />
+
+</LinearLayout>
