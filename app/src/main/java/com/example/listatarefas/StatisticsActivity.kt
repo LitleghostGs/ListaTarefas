@@ -37,16 +37,19 @@ class StatisticsActivity : AppCompatActivity() {
     }
 
     private fun carregarEstatisticas() {
+        val sharedPreferences = getSharedPreferences("app_session", MODE_PRIVATE)
+        val userId = sharedPreferences.getInt("user_id", -1)
+
         CoroutineScope(Dispatchers.IO).launch {
-            val todas = db.taskDao().listarTarefas()
+            val todas = if (userId != -1) db.taskDao().listarTarefas(userId) else emptyList()
             val concluidas = todas.count { it.concluida }
             val pendentes = todas.count { !it.concluida }
             val total = todas.size
 
             withContext(Dispatchers.Main) {
-                txtTotal.text = "Total de Tarefas: $total"
-                txtConcluidas.text = "Concluídas: $concluidas"
-                txtPendentes.text = "Pendentes: $pendentes"
+                txtTotal.text = total.toString()
+                txtConcluidas.text = concluidas.toString()
+                txtPendentes.text = pendentes.toString()
 
                 configurarGrafico(concluidas, pendentes)
             }

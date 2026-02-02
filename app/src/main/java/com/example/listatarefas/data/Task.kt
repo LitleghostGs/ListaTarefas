@@ -11,5 +11,6 @@ data class Task(
     var descricao: String = "",
     var concluida: Boolean = false,
     var data: String? = null,   // opcional
-    var hora: String? = null    // opcional
+    var hora: String? = null,   // opcional
+    val userId: Int             // Foreign Key for User
 )

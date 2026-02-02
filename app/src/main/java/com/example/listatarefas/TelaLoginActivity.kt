@@ -47,7 +47,10 @@ class TelaLoginActivity : AppCompatActivity() {
                 kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                     if (user != null) {
                         // Salvar sessão
-                        sharedPreferences.edit().putBoolean("is_logged_in", true).apply()
+                        sharedPreferences.edit()
+                            .putBoolean("is_logged_in", true)
+                            .putInt("user_id", user.id)
+                            .apply()
                         
                         val intent = Intent(this@TelaLoginActivity, MainActivity::class.java)
                         startActivity(intent)

@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -31,9 +32,22 @@ class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener {
     private lateinit var db: TaskDatabase
     private var filtroAtual = "TODAS" // TODAS, PENDENTES, CONCLUIDAS
 
+    private var userId: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val sharedPreferences = getSharedPreferences("app_session", MODE_PRIVATE)
+        userId = sharedPreferences.getInt("user_id", -1)
+
+        if (userId == -1) {
+            // Sessão inválida (pode ocorrer após migração ou erro). Limpar e redirecionar.
+            sharedPreferences.edit().clear().apply()
+            startActivity(Intent(this, TelaLoginActivity::class.java))
+            finish()
+            return
+        }
 
         db = TaskDatabase.getDatabase(this)
 
@@ -44,6 +58,24 @@ class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener {
 
         findViewById<FloatingActionButton>(R.id.fabAddTask).setOnClickListener {
             mostrarDialogoTarefa(null)
+        }
+        
+        val btnLogout = findViewById<ImageButton>(R.id.btnLogout)
+        btnLogout.setOnClickListener {
+            Toast.makeText(this, "Saindo...", Toast.LENGTH_SHORT).show()
+            
+            val prefs = getSharedPreferences("app_session", MODE_PRIVATE)
+            prefs.edit().clear().commit() // Usar commit para garantir gravação síncrona
+            
+            val intent = Intent(this, TelaLoginActivity::class.java)
+            // Limpar a pilha de activities para impedir voltar
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
+
+        findViewById<ImageButton>(R.id.btnStats).setOnClickListener {
+            startActivity(Intent(this, StatisticsActivity::class.java))
         }
 
         configurarFiltros()
@@ -85,9 +117,9 @@ class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener {
     private fun listarTarefas() {
         CoroutineScope(Dispatchers.IO).launch {
             val tarefas = when (filtroAtual) {
-                "PENDENTES" -> db.taskDao().listarPendentes()
-                "CONCLUIDAS" -> db.taskDao().listarConcluidas()
-                else -> db.taskDao().listarTarefas()
+                "PENDENTES" -> db.taskDao().listarPendentes(userId)
+                "CONCLUIDAS" -> db.taskDao().listarConcluidas(userId)
+                else -> db.taskDao().listarTarefas(userId)
             }
             withContext(Dispatchers.Main) {
                 adapter.atualizarLista(tarefas)
@@ -142,7 +174,7 @@ class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener {
             if (titulo.isNotEmpty()) {
                 CoroutineScope(Dispatchers.IO).launch {
                     if (task == null) {
-                        val novaTask = Task(titulo = titulo, data = dataSelecionada, hora = horaSelecionada)
+                        val novaTask = Task(titulo = titulo, data = dataSelecionada, hora = horaSelecionada, userId = userId)
                         db.taskDao().inserir(novaTask)
                         scheduleAlarm(novaTask)
                     } else {
