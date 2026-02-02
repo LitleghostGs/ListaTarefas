@@ -21,7 +21,10 @@ class TaskAdapter(
 
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titulo: TextView = itemView.findViewById(R.id.textTitulo)
+        val data: TextView = itemView.findViewById(R.id.textData)
+        val hora: TextView = itemView.findViewById(R.id.textHora)
         val checkConcluida: CheckBox = itemView.findViewById(R.id.checkboxConcluida)
+        val btnEditar: ImageButton = itemView.findViewById(R.id.btnEditar)
         val btnDeletar: ImageButton = itemView.findViewById(R.id.btnDeletar)
     }
 
@@ -34,6 +37,12 @@ class TaskAdapter(
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = tarefas[position]
         holder.titulo.text = task.titulo
+        holder.data.text = task.data ?: ""
+        holder.hora.text = task.hora ?: ""
+        holder.hora.text = task.hora ?: ""
+        
+        // Remover listener anterior para evitar disparo acidental ao setar isChecked
+        holder.checkConcluida.setOnCheckedChangeListener(null)
         holder.checkConcluida.isChecked = task.concluida
 
         // Alterar status
@@ -43,6 +52,11 @@ class TaskAdapter(
 
         // Editar ao clicar no título
         holder.titulo.setOnClickListener {
+            listener.onEditar(task)
+        }
+
+        // Editar ao clicar no botão
+        holder.btnEditar.setOnClickListener {
             listener.onEditar(task)
         }
 

@@ -61,4 +61,15 @@
         android:minHeight="48dp"
         app:cornerRadius="12dp" />
 
+    <TextView
+        android:id="@+id/txtCadastrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Não tem conta? Cadastre-se"
+        android:textColor="?attr/colorPrimary"
+        android:layout_marginTop="24dp"
+        android:textSize="14sp"
+        android:clickable="true"
+        android:focusable="true"/>
+
 </LinearLayout>
